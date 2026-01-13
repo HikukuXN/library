@@ -1,28 +1,42 @@
---// Library Hub - Full Fixed Version
+--// Library Hub - Rayfield UI Version
 
-local Fluent = loadstring(game:HttpGet(
-    "https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"
-))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 --// Window
-local Window = Fluent:CreateWindow({
-    Title = "Library Hub",
-    SubTitle = "by Library",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
-    Theme = "Darker",
-    MinimizeKey = Enum.KeyCode.LeftControl
+local Window = Rayfield:CreateWindow({
+   Name = "Library Hub",
+   LoadingTitle = "Library Hub",
+   LoadingSubtitle = "by Library",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "LibraryHub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = false,
+   KeySettings = {
+      Title = "Library Hub",
+      Subtitle = "Key System",
+      Note = "No key required",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {""}
+   }
 })
 
 --// Tabs
 local Tabs = {
-    All  = Window:AddTab({ Title = "All Scripts", Icon = "layout-grid" }),
-    ADM  = Window:AddTab({ Title = "Adopt Me", Icon = "heart" }),
-    MM2  = Window:AddTab({ Title = "Murder Mystery 2", Icon = "swords" }),
-    SAB  = Window:AddTab({ Title = "Steal A Brainrot", Icon = "skull" }),
-    Hubs = Window:AddTab({ Title = "Hubs", Icon = "package" }),
-    Info = Window:AddTab({ Title = "Info", Icon = "info" })
+    All  = Window:CreateTab("All Scripts", 4483362458),
+    ADM  = Window:CreateTab("Adopt Me", 4483362458),
+    MM2  = Window:CreateTab("Murder Mystery 2", 4483362458),
+    SAB  = Window:CreateTab("Steal A Brainrot", 4483362458),
+    Hubs = Window:CreateTab("Hubs", 4483362458),
+    Info = Window:CreateTab("Info", 4483362458)
 }
 
 --// Script Database
@@ -45,10 +59,18 @@ local lastUsed = "None"
 local function Execute(name, url)
     lastUsed = name
 
-    Fluent:Notify({
-        Title = "Library Hub",
-        Content = "Executing " .. name .. "...",
-        Duration = 3
+    Rayfield:Notify({
+       Title = "Library Hub",
+       Content = "Executing " .. name .. "...",
+       Duration = 3,
+       Image = 4483362458,
+       Actions = {
+          Ignore = {
+             Name = "Okay!",
+             Callback = function()
+             end
+          },
+       },
     })
 
     task.spawn(function()
@@ -57,16 +79,32 @@ local function Execute(name, url)
         end)
 
         if success then
-            Fluent:Notify({
-                Title = "Success",
-                Content = name .. " loaded successfully!",
-                Duration = 4
+            Rayfield:Notify({
+               Title = "Success",
+               Content = name .. " loaded successfully!",
+               Duration = 4,
+               Image = 4483362458,
+               Actions = {
+                  Ignore = {
+                     Name = "Okay!",
+                     Callback = function()
+                     end
+                  },
+               },
             })
         else
-            Fluent:Notify({
-                Title = "Error",
-                Content = "Failed to load " .. name,
-                Duration = 5
+            Rayfield:Notify({
+               Title = "Error",
+               Content = "Failed to load " .. name,
+               Duration = 5,
+               Image = 4483362458,
+               Actions = {
+                  Ignore = {
+                     Name = "Okay!",
+                     Callback = function()
+                     end
+                  },
+               },
             })
             warn("Script Error:", err)
         end
@@ -74,80 +112,71 @@ local function Execute(name, url)
 end
 
 --// ALL TAB
-Tabs.All:AddParagraph({
-    Title = "All Available Scripts",
-    Content = "Click any button below to execute the script"
-})
+local AllSection = Tabs.All:CreateSection("All Available Scripts")
+
+Tabs.All:CreateParagraph({Title = "All Scripts", Content = "Click any button below to execute the script"})
 
 for name, url in pairs(scriptData) do
-    Tabs.All:AddButton({
-        Title = name,
-        Description = "Execute " .. name,
-        Callback = function()
-            Execute(name, url)
-        end
+    Tabs.All:CreateButton({
+       Name = name,
+       Callback = function()
+           Execute(name, url)
+       end,
     })
 end
 
---// ADOPT ME TAB (FIXED FILTER)
-Tabs.ADM:AddParagraph({
-    Title = "Adopt Me Scripts",
-    Content = "Scripts specifically for Adopt Me"
-})
+--// ADOPT ME TAB
+local ADMSection = Tabs.ADM:CreateSection("Adopt Me Scripts")
+
+Tabs.ADM:CreateParagraph({Title = "Adopt Me", Content = "Scripts specifically for Adopt Me"})
 
 for name, url in pairs(scriptData) do
     if name:find("ADM") or name:lower():find("adopt") then
-        Tabs.ADM:AddButton({
-            Title = name,
-            Description = "Execute Adopt Me script",
-            Callback = function()
-                Execute(name, url)
-            end
+        Tabs.ADM:CreateButton({
+           Name = name,
+           Callback = function()
+               Execute(name, url)
+           end,
         })
     end
 end
 
 --// MM2 TAB
-Tabs.MM2:AddParagraph({
-    Title = "Murder Mystery 2",
-    Content = "Scripts for MM2"
-})
+local MM2Section = Tabs.MM2:CreateSection("Murder Mystery 2 Scripts")
+
+Tabs.MM2:CreateParagraph({Title = "Murder Mystery 2", Content = "Scripts for MM2"})
 
 for name, url in pairs(scriptData) do
     if name:find("MM2") then
-        Tabs.MM2:AddButton({
-            Title = name,
-            Description = "Execute MM2 script",
-            Callback = function()
-                Execute(name, url)
-            end
+        Tabs.MM2:CreateButton({
+           Name = name,
+           Callback = function()
+               Execute(name, url)
+           end,
         })
     end
 end
 
 --// SAB TAB
-Tabs.SAB:AddParagraph({
-    Title = "Steal A Brainrot",
-    Content = "Scripts for SAB"
-})
+local SABSection = Tabs.SAB:CreateSection("Steal A Brainrot Scripts")
+
+Tabs.SAB:CreateParagraph({Title = "Steal A Brainrot", Content = "Scripts for SAB"})
 
 for name, url in pairs(scriptData) do
     if name:find("SAB") then
-        Tabs.SAB:AddButton({
-            Title = name,
-            Description = "Execute SAB script",
-            Callback = function()
-                Execute(name, url)
-            end
+        Tabs.SAB:CreateButton({
+           Name = name,
+           Callback = function()
+               Execute(name, url)
+           end,
         })
     end
 end
 
 --// HUBS TAB
-Tabs.Hubs:AddParagraph({
-    Title = "Universal Hubs",
-    Content = "Multi-game script hubs"
-})
+local HubsSection = Tabs.Hubs:CreateSection("Universal Hubs")
+
+Tabs.Hubs:CreateParagraph({Title = "Universal Hubs", Content = "Multi-game script hubs"})
 
 local hubList = {
     "Ronix Hub",
@@ -159,149 +188,73 @@ local hubList = {
 
 for _, name in ipairs(hubList) do
     if scriptData[name] then
-        Tabs.Hubs:AddButton({
-            Title = name,
-            Description = "Execute hub",
-            Callback = function()
-                Execute(name, scriptData[name])
-            end
+        Tabs.Hubs:CreateButton({
+           Name = name,
+           Callback = function()
+               Execute(name, scriptData[name])
+           end,
         })
     end
 end
 
 --// INFO TAB
-Tabs.Info:AddParagraph({
-    Title = "Library Hub",
-    Content = "Professional script hub for mobile and PC.\nCreated by Library"
+local InfoSection = Tabs.Info:CreateSection("Library Hub Information")
+
+Tabs.Info:CreateParagraph({Title = "Library Hub", Content = "Professional script hub for mobile and PC.\nCreated by Library"})
+
+Tabs.Info:CreateButton({
+   Name = "Show Last Used Script",
+   Callback = function()
+       Rayfield:Notify({
+          Title = "Last Used Script",
+          Content = lastUsed,
+          Duration = 5,
+          Image = 4483362458,
+          Actions = {
+             Ignore = {
+                Name = "Okay!",
+                Callback = function()
+                end
+             },
+          },
+       })
+   end,
 })
 
-Tabs.Info:AddButton({
-    Title = "Show Last Used Script",
-    Description = "View last executed script",
-    Callback = function()
-        Fluent:Notify({
-            Title = "Last Used",
-            Content = lastUsed,
-            Duration = 5
-        })
-    end
-})
+Tabs.Info:CreateParagraph({Title = "Controls", Content = "Press Right CTRL to toggle the GUI"})
 
-Tabs.Info:AddParagraph({
-    Title = "Controls",
-    Content = "Press Left Control to minimize/maximize the GUI"
-})
-
-Tabs.Info:AddButton({
-    Title = "Close GUI",
-    Description = "Close the hub completely",
-    Callback = function()
-        Fluent:Notify({
-            Title = "Closing",
-            Content = "Goodbye!",
-            Duration = 2
-        })
-        task.wait(2)
-        pcall(function()
-            game:GetService("CoreGui"):FindFirstChild("ScreenGui"):Destroy()
-        end)
-    end
+Tabs.Info:CreateButton({
+   Name = "Close GUI",
+   Callback = function()
+       Rayfield:Notify({
+          Title = "Closing",
+          Content = "Goodbye!",
+          Duration = 2,
+          Image = 4483362458,
+          Actions = {
+             Ignore = {
+                Name = "Bye!",
+                Callback = function()
+                end
+             },
+          },
+       })
+       task.wait(2)
+       Rayfield:Destroy()
+   end,
 })
 
 --// Loaded Notify
-Fluent:Notify({
-    Title = "Library Hub",
-    Content = "Successfully loaded!",
-    Duration = 5
-})            Title = name,
-            Description = "Execute script",
-            Callback = function()
-                Execute(name, url)
-            end
-        })
-    end
-end
-
-Tabs.SAB:AddParagraph({
-    Title = "Steal A Brainrot",
-    Content = "Scripts for SAB"
-})
-
-for name, url in pairs(scriptData) do
-    if name:find("SAB") then
-        Tabs.SAB:AddButton({
-            Title = name,
-            Description = "Execute script",
-            Callback = function()
-                Execute(name, url)
-            end
-        })
-    end
-end
-
-Tabs.Hubs:AddParagraph({
-    Title = "Universal Hubs",
-    Content = "Multi-game script hubs"
-})
-
-local hubList = {
-    "Ronix Hub",
-    "Thunder Z Hub",
-    "Limit Hub",
-    "Speed Hub",
-    "Quantum Hub"
-}
-
-for _, name in ipairs(hubList) do
-    if scriptData[name] then
-        Tabs.Hubs:AddButton({
-            Title = name,
-            Description = "Execute hub",
-            Callback = function()
-                Execute(name, scriptData[name])
-            end
-        })
-    end
-end
-
-Tabs.Info:AddParagraph({
-    Title = "Library Hub",
-    Content = "Professional script hub for mobile and PC.\nCreated by Library"
-})
-
-Tabs.Info:AddButton({
-    Title = "Show Last Used Script",
-    Description = "View last executed script",
-    Callback = function()
-        Fluent:Notify({
-            Title = "Last Used",
-            Content = lastUsed,
-            Duration = 5
-        })
-    end
-})
-
-Tabs.Info:AddParagraph({
-    Title = "Controls",
-    Content = "Press Left Control to minimize/maximize the GUI"
-})
-
-Tabs.Info:AddButton({
-    Title = "Close GUI",
-    Description = "Close the hub completely",
-    Callback = function()
-        Fluent:Notify({
-            Title = "Closing",
-            Content = "Goodbye!",
-            Duration = 2
-        })
-        task.wait(2)
-        game:GetService("CoreGui"):FindFirstChild("ScreenGui"):Destroy()
-    end
-})
-
-Fluent:Notify({
-    Title = "Library Hub",
-    Content = "Successfully loaded!",
-    Duration = 5
+Rayfield:Notify({
+   Title = "Library Hub",
+   Content = "Successfully loaded!",
+   Duration = 5,
+   Image = 4483362458,
+   Actions = {
+      Ignore = {
+         Name = "Okay!",
+         Callback = function()
+         end
+      },
+   },
 })
